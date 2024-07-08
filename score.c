@@ -52,7 +52,7 @@ void scoreScreen(WINDOW *win) {
 	int x, y;
 	getmaxyx(win, y, x);
 
-	int ch;
+	int ch = ERR;
 
 	// 履歴を確認するかタイトルへ戻るか
 	int score_select = 0;

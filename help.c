@@ -28,7 +28,7 @@ void helpScreen(WINDOW *win) {
 	wrefresh(sub_win);
 
 	int help_select = 0;
-	int ch;
+	int ch = ERR;
 
 	// カーソルの初期設定
 	displayHelpFrame(win);
