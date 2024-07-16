@@ -1,10 +1,10 @@
 #ifndef GAME_SCORE_H
 #define GAME_SCORE_H
 
+#include <ncurses.h>
+
 #include "dice_list.h"
 #include "player.h"
-
-#include <ncurses.h>
 
 void displayPredictionScore(WINDOW *win, int x, int y, DiceList *dice, Player *pl, int turn);
 

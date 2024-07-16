@@ -1,30 +1,26 @@
-#include "title.h"
-#include "screen_place.h"
-
-//描画用関数を定義
 #include <ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <math.h>
+
+#include "title.h"
+#include "screen_place.h"
+
+//描画用関数を定義
 
 // ロゴを表示する関数
 void printYahtzee(WINDOW *win);
 // メニュー表示をする関数
 void printMenu(WINDOW *win);
 // メニューカーソルを表示する関数
-void printTitleCursor(WINDOW *win, int cursor);
+void printMenuCursor(WINDOW *win, int cursor);
 // カーソルを消す関数
 void deleteTitleCursor(WINDOW *win,int cursor);
-// カーソル位置をリセットする関数
-void resetTitleCursor(WINDOW *win,int cursor);
 
-void printTitleFrame(WINDOW *win);
+void printMenuFrame(WINDOW *win);
 
 ///////////////////////////////////
 //								 //
@@ -35,6 +31,15 @@ void printTitleFrame(WINDOW *win);
 char *menu[5];
 
 //int blinking_counter = 0;
+
+void displayTitleScreen(WINDOW *win, int select) {
+		box(win, 0, 0);
+		printYahtzee(win);
+		printMenu(win);
+		printMenuFrame(win);
+		printMenuCursor(win, select);
+		wrefresh(win);
+}
 
 
 void printYahtzee(WINDOW *win) {
@@ -86,7 +91,7 @@ void printYahtzee(WINDOW *win) {
 
 void printMenu(WINDOW *win) {
 	int placeX[5], placeY;
-	getMenuPlace(win, &placeY, placeX);
+	getMenuPlace(win, placeX, &placeY);
 
 	//メニューボード
 	menu[0] = "ＣＰＵ対戦";
@@ -103,14 +108,14 @@ void printMenu(WINDOW *win) {
 
 }
 
-void printTitleCursor(WINDOW *win, int cursor) {
+void printMenuCursor(WINDOW *win, int cursor) {
 	int length = 19;
 	int top_delay = (-2);
 	int bottom_delay = 2;
 	int left_delay = (-4);
 
 	int placeX[5], placeY;
-	getMenuPlace(win, &placeY, placeX);
+	getMenuPlace(win, placeX, &placeY);
 
 	// 矢印キーが入力されたときのみ更新する
 		// 前のカーソル位置を保持する
@@ -129,9 +134,22 @@ void printTitleCursor(WINDOW *win, int cursor) {
 		wrefresh(win);
 }
 
-void printTitleFrame(WINDOW *win) {
+// カーソルを消去する
+void deleteTitleCursor(WINDOW *win,int cursor) {
 	int placeX[5], placeY;
-	getMenuPlace(win, &placeY, placeX);
+	getMenuPlace(win, placeX, &placeY);
+	int length = 20;
+	int top_delay = (-2);
+	int bottom_delay = 2;
+	int left_delay = (-4);
+	mvwhline(win, placeY + top_delay, placeX[cursor] + left_delay, ' ', length);
+	mvwhline(win, placeY + bottom_delay, placeX[cursor] + left_delay, ' ', length);
+	wrefresh(win);
+}
+
+void printMenuFrame(WINDOW *win) {
+	int placeX[5], placeY;
+	getMenuPlace(win, placeX, &placeY);
 	int length = 14;
 	int top_delay = (-1);
 	int bottom_delay = 1;
@@ -148,21 +166,4 @@ void printTitleFrame(WINDOW *win) {
 	wattrset(win, 0);
 
 	wrefresh(win);
-}
-
-// カーソルを消去する
-void deleteTitleCursor(WINDOW *win,int cursor) {
-	int placeX[5], placeY;
-	getMenuPlace(win, &placeY, placeX);
-	int length = 20;
-	int top_delay = (-2);
-	int bottom_delay = 2;
-	int left_delay = (-4);
-	mvwhline(win, placeY + top_delay, placeX[cursor] + left_delay, ' ', length);
-	mvwhline(win, placeY + bottom_delay, placeX[cursor] + left_delay, ' ', length);
-	wrefresh(win);
-}
-
-void resetTitleCursor(WINDOW *win, int cursor) {
-	printTitleCursor(win, cursor);
 }

@@ -3,7 +3,9 @@
 
 #include <ncurses.h>
 
+#include "window_struct.h"
+
 // スコアを管理する
-void scoreScreen(WINDOW *win);
+void scoreScreen(GameWin *wins);
 
 #endif // SCORE_H

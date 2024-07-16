@@ -1,12 +1,3 @@
-#include "error.h"
-#include "title.h"
-#include "game_screen.h"
-#include "create.h"
-#include "yahtzee_game.h"
-#include "score.h"
-#include "help.h"
-
-
 #include <ncurses.h>
 #include <locale.h>
 #include <string.h>
@@ -16,10 +7,22 @@
 #include <stdbool.h>
 #include <getopt.h>
 
+#include "window_struct.h"
+#include "error.h"
+#include "title.h"
+#include "game_screen.h"
+#include "create.h"
+#include "yahtzee_game.h"
+#include "score.h"
+#include "help.h"
+#include "debug_mode.h"
+#include "cpu.h"
+#include "window_struct.h"
+
 // 色の要素を初期化
 void initColor();
 // 「ヨット」ゲーム起動
-void run(WINDOW *win, WINDOW *secondWin);
+void run(GameWin *wins);
 
 void initModule();
 
@@ -32,7 +35,8 @@ void initWindowModule(WINDOW *win);
 
 int main(int argc, char *argv[]) {
 
-	WINDOW *secondWin = NULL;
+
+	GameWin *wins = NULL;
 	//WINDOW *ThirdWin = NULL;
 
 	// 開始処理
@@ -47,51 +51,27 @@ int main(int argc, char *argv[]) {
 	while ((ch = getopt(argc, argv, "d")) != -1) {
 		switch (ch) {
 		case 'd':
-			setDebagMode(TRUE);
+			setDebugMode(TRUE);
 			break;
 		default:
 			argumentsError(argv);
 			break;
 		}
 	}
+	// ウィンドウ生成処理
+	createWindow(&wins);
 	// getopt が -1 を返した後に optind が argc より小さい場合、未定の引数が存在する
 	if (optind < argc) {
 		argumentsError(argv);
 	}
+	sizeError(wins);
 
-	// ウィンドウの作成処理
-	int win_height = 50;
-	int win_width = 186;
-	int start_y = (LINES - win_height) / 2; // 中央に配置
-	int start_x;
-
-	if(getDebagMode()) {
-		start_x = COLS - win_width;
-	}
-	else {
-		start_x = (COLS - win_width) / 2;// 中央に配置
-	}
-
-	WINDOW *win = newwin(win_height, win_width, start_y, start_x);
-
-	if(getDebagMode()) {
-		int sub_start_x = 0;
-		int sub_win_width = COLS - win_width;
-		secondWin = newwin(win_height, sub_win_width, start_y, sub_start_x);
-		box(secondWin, 0, 0);
-		wrefresh(secondWin);
-	}
-
-	initWindowModule(win);
+	initWindowModule(wins->main_win);
 	// ゲーム起動
-	run(win, secondWin);
+	run(wins);
 
 	// 終了処理
-	// 終了処理
-	if (secondWin != NULL) {
-		delwin(secondWin);
-	}
-	delwin(win);
+	freeWindow(wins);
 	endwin();
 
 	return 0;
@@ -130,9 +110,7 @@ void initColor() {
 //                                  //
 //////////////////////////////////////
 
-void run(WINDOW *win, WINDOW *secondWin) {
-	// 画面サイズ縦と横
-	int screen_height, screen_width;
+void run(GameWin *wins) {
 
 	///////////////////////
 	//      タイトル画面    //
@@ -141,39 +119,32 @@ void run(WINDOW *win, WINDOW *secondWin) {
 	// menu選択
 	int menu_select = 0;
 	int menu_max = 4;
-	int ch = ERR;
+	int ch = OK;
 	int temp_select = menu_select;
 
 
 	while(menu_select != menu_max) {
 		menu_select = 0;
-		box(win, 0, 0);
-		printYahtzee(win);
-		printMenu(win);
-		printTitleFrame(win);
-		printTitleCursor(win, menu_select);
-		wrefresh(win);
+		displayTitleScreen(wins->main_win, menu_select);
 
 		while(ch != '\n') {
-
-			getmaxyx(win, screen_height, screen_width);
 			//毎度画面サイズが正しいか判断する
-			sizeError(screen_height, screen_width);
+			sizeError(wins);
 
 			if(ch != ERR && menu_select != temp_select) {
-				printTitleCursor(win, menu_select);
+				printMenuCursor(wins->main_win, menu_select);
 			}
 
 			temp_select = menu_select;
 
 			// 入力の受付
-			ch = wgetch(win);
+			ch = wgetch(wins->main_win);
 
 			switch(ch) {
 				case KEY_LEFT:
 				// カーソルを左に移動
 				if(menu_select != 0) {
-					deleteTitleCursor(win, menu_select);
+					deleteTitleCursor(wins->main_win, menu_select);
 					menu_select--;
 				}
 					break;
@@ -181,7 +152,7 @@ void run(WINDOW *win, WINDOW *secondWin) {
 				case KEY_RIGHT:
 				// カーソルを右に移動
 				if(menu_select != menu_max) {
-					deleteTitleCursor(win, menu_select);
+					deleteTitleCursor(wins->main_win, menu_select);
 					menu_select++;
 				}
 					break;
@@ -193,24 +164,24 @@ void run(WINDOW *win, WINDOW *secondWin) {
 			case 0:
 				// 「cpuスタート」を選択
 				//printStart();
-				setVsCpu(TRUE);
-				yahtzeeGame(win, secondWin);
+				setComputer(TRUE);
+				yahtzeeGame(wins);
 				break;
 
 			case 1:
 				// 「2人で対戦」を選択
-				setVsCpu(FALSE);
-				yahtzeeGame(win, secondWin);
+				setComputer(FALSE);
+				yahtzeeGame(wins);
 				break;
 
 			case 2:
 				// 「ヘルプ」を選択
-				helpScreen(win);
+				helpScreen(wins);
 				break;
 
 			case 3:
 				// 「スコア」を選択
-				scoreScreen(win);
+				scoreScreen(wins);
 				break;
 
 			case 4:

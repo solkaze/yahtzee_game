@@ -1,3 +1,7 @@
+#include <ncurses.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #include "player.h"
 #include "calc_score.h"
 #include "dice_list.h"
@@ -5,32 +9,7 @@
 #include "game_score.h"
 #include "screen_place.h"
 
-#include <ncurses.h>
-#include <stdlib.h>
-#include <unistd.h>
-
 void displayPredictionScore(WINDOW *win, int x, int y, DiceList *dice, Player *pl, int turn);
-
-// 桁数を数える
-int digit_count(int num) {
-	int count = 0;
-
-	if(num == 0) {
-		return 1;
-	}
-
-	if(num < 0) {
-		num = -num;
-	}
-
-	while(num != 0) {
-		num /= 10;
-
-		count++;
-	}
-
-	return count;
-}
 
 void displayPredictionScore(WINDOW *win, int x, int y, DiceList *dice, Player *pl, int turn) {
 	int placeX[2];
@@ -87,7 +66,7 @@ void displayPredictionScore(WINDOW *win, int x, int y, DiceList *dice, Player *p
 void erasePredictionScore(WINDOW *win, int x, int y, Player *pl, int turn) {
 	int placeX[2];
 	int placeY[12];
-	
+
 	getScorePlaceX(x, placeX);
 	getScorePlaceY(y, placeY);
 
@@ -114,7 +93,7 @@ void displayScore(WINDOW *win, int x, int y, Player *pl, int turn) {
 	int scores[] = {pl->ace, pl->deuce, pl->trey, pl->four, pl->five, pl->six, 
 				pl->choice, pl->four_dice, pl->full_house, pl->small_straight, 
 				pl->big_straight, pl->yahtzee};
-				
+
 	for (int i = 0; i < 12; i++) {
 		if (scores[i] != EMPTY) {
 			mvwprintw(win, placeY[i], placeX[turn], "%2d", scores[i]);
@@ -190,4 +169,25 @@ void displayBonusScore(WINDOW *win, int x, int y, int point, int turn) {
 		usleep(500000);
 	}
 
+}
+
+// 桁数を数える
+int digit_count(int num) {
+	int count = 0;
+
+	if(num == 0) {
+		return 1;
+	}
+
+	if(num < 0) {
+		num = -num;
+	}
+
+	while(num != 0) {
+		num /= 10;
+
+		count++;
+	}
+
+	return count;
 }

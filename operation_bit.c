@@ -1,6 +1,6 @@
-#include "operation_bit.h"
-
 #include <stdio.h>
+
+#include "operation_bit.h"
 
 // unsigned int型の値を5ビットで表示する関数
 void printBinary5Bits(unsigned int num) {
@@ -49,22 +49,22 @@ int concatenateBinary(int num1, int num2) {
 }
 
 // 指定の数だけ1を敷き詰める関数
-int createBitMask(int n) {
-    if (n <= 0) {
+int createBitMask(int num) {
+    if (num <= 0) {
         return 0;
     }
-    return (1 << n) - 1;
+    return (1 << num) - 1;
 }
 
 // 指定の数だけ先頭から1を敷き詰める関数
-int createLeadingOnesMask(int n) {
-    if (n <= 0) {
+int createLeadingOnesMask(int num) {
+    if (num <= 0) {
         return 0;
     }
-    if (n > MAX_BITS) {
-        n = MAX_BITS;
+    if (num > MAX_BITS) {
+        num = MAX_BITS;
     }
-    return ((1 << n) - 1) << (MAX_BITS - n);
+    return ((1 << num) - 1) << (MAX_BITS - num);
 }
 
 // 排他的論理和を返す関数
@@ -90,7 +90,7 @@ int extractUpperBits(int num, unsigned int bit_count) {
 }
 
 // 指定した下位ビットを抽出して整数を返す関数
-int extractLowerBits(int num, int bit_count) {
+int extractLowerBits(int num, unsigned int bit_count) {
 	// numの下位bit_countビットだけを残す
 	return num & ((1 << bit_count) - 1);
 }

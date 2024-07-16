@@ -1,243 +1,334 @@
-#include "player.h"
-#include "operation_score.h"
-#include "error.h"
-
-#include <stdio.h>
+#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ncurses.h>
+#include <unistd.h>
+#include "operation_score.h"
+#include "op_score_list.h"
+#include "screen_place.h"
 
-void initializeScoreList(ScoreList **head) {
-	*head = NULL;
+// 1試合の対戦結果を表示する
+void displayScoreHistory(WINDOW *win, ScoreList *score_list, int history_select, int x, int y) {
+
+
+	int player_1 = 0;
+	int player_2 = 1;
+	displayHistoryScore(win, x, y, score_list, player_1, history_select);
+	displayHistoryScore(win, x, y, score_list, player_2, history_select);
+	displayHistoryName(win, x, y, score_list, player_1, history_select);
+	displayHistoryName(win, x, y, score_list, player_2, history_select);
+	displayHistoryTotalScore(win, x, y, score_list, player_1, history_select);
+	displayHistoryTotalScore(win, x, y, score_list, player_2, history_select);
+	wrefresh(win);
+
 }
 
-// 新しいノードを作成する関数
-ScoreList* createNode(Player *players[]) {
-	ScoreList *newNode = (ScoreList*)malloc(sizeof(ScoreList));
-	if (!newNode) {
-		printf("Memory allocation error\n");
-		exit(EXIT_FAILURE);
+// リセットのために表示を一旦消す
+void eraseScoreHistory(WINDOW *win, int x, int y) {
+
+	int placeX[2];
+	int placeY[12];
+	int player_1 = 0;
+	int player_2 = 1;
+	int h_length = 6;
+	getScorePlaceX(x, placeX);
+	getScorePlaceY(y, placeY);
+	for (int i = 0; i < 12; i++) {
+		mvwhline(win, placeY[i],placeX[player_1], ' ', h_length);
 	}
-	for (int i = 0; i < 2; i++) {
-		newNode->players[i] = *players[i];
-		newNode->players[i].name = strdup(players[i]->name); // 名前を複製する
+
+	for (int i = 0; i < 12; i++) {
+		mvwhline(win, placeY[i],placeX[player_2], ' ', h_length);
 	}
-	newNode->next = NULL;
-	return newNode;
+
+	// 名前部分を消去する処理
+	int start_x = getNamePlaceX(x, player_1);
+	int start_y = getNamePlaceY(y);
+	int n_length = 12;
+	mvwhline(win, start_y, start_x, ' ', n_length);
+	start_x = getNamePlaceX(x, player_2);
+	mvwhline(win, start_y, start_x, ' ', n_length);
 }
 
-// リストの先頭にノードを追加する関数
-void addNodeBeginningPlayer(ScoreList** head, Player *players[]) {
-	ScoreList *newNode = createNode(players);
-	newNode->next = *head;
-	*head = newNode;
+// 画面の初期化
+void initScoreScreen(WINDOW *win) {
+	wclear(win);
+	box(win, 0,0);
+	wrefresh(win);
 }
 
-// リストの末尾にノードを追加する
-void addNodeEndPlayer(ScoreList** head, Player *players[]) {
-	ScoreList *newNode = createNode(players);
-	if (*head == NULL) {
-		*head = newNode;
-	} else {
-		ScoreList *temp = *head;
-		while (temp->next != NULL) {
-			temp = temp->next;
+// ページ番号を表示する
+void displayPage(WINDOW *win, int history_select) {
+	int screen_x = 29;
+	int screen_y = 3;
+
+	mvwprintw(win, screen_y, screen_x, "%2d", history_select);
+}
+
+void createScoreScreen(WINDOW *win, int history_select_max) {
+
+	int screen_x;
+	int screen_y;
+
+	getmaxyx(win, screen_y, screen_x);
+	int x = screen_x/2;
+	int adjust_line_x = (-30);
+
+	char *item[2] = {"ゲーム履歴", "タイトルへ戻る"};
+	int h_line_y = 6;
+	mvwaddch(win, 0, x + adjust_line_x, ACS_TTEE);
+	mvwvline(win, 1, x + adjust_line_x, ACS_VLINE, screen_y - 2);
+	mvwaddch(win, screen_y - 1, x + adjust_line_x, ACS_BTEE);
+	mvwaddch(win, h_line_y, 0, ACS_LTEE);
+	mvwhline(win, h_line_y, 1, ACS_HLINE, x + adjust_line_x - 1);
+	mvwaddch(win, h_line_y, x + adjust_line_x, ACS_RTEE);
+
+	// 項目の処理
+	int placeX;
+	int placeY[2];
+
+	getScoreItemCursorPlace(win, &placeX, placeY);
+
+	mvwprintw(win, placeY[0], placeX, "%s", item[0]);
+	mvwprintw(win, placeY[1], placeX, "%s", item[1]);
+
+	int screen_page_x = placeX + 10;
+	int screen_page_y = 3;
+
+	mvwprintw(win, screen_page_y, screen_page_x, "/ %d", history_select_max);
+	wrefresh(win);
+}
+
+// 履歴のメージ移動のカーソルを表示する関数
+void displayPageCursor(WINDOW *win, int select, int history_select, int history_max) {
+	// 項目の処理
+	int placeX;
+	int placeY[2];
+
+	int top_delay = (-3);
+	int left_delay = (-2);
+	int right_delay = 18;
+
+	getScoreItemCursorPlace(win,&placeX, placeY);
+	// カーソルが0のときのみ表示する
+	wattrset(win, COLOR_PAIR(3));
+	if(select == 0) {
+		if(history_select == 0) {
+			mvwprintw(win, placeY[0] + top_delay, placeX + left_delay, "  ");
+			mvwprintw(win, placeY[0] + top_delay, placeX + right_delay, ">>");
 		}
-		temp->next = newNode;
+		else if(history_select == history_max) {
+			mvwprintw(win, placeY[0] + top_delay, placeX + left_delay, "<<");
+			mvwprintw(win, placeY[0] + top_delay, placeX + right_delay, "  ");
+		}
+		else{
+			mvwprintw(win, placeY[0] + top_delay, placeX + left_delay, "<<");
+			mvwprintw(win, placeY[0] + top_delay, placeX + right_delay, ">>");
+		}
 	}
+	else {
+		mvwprintw(win, placeY[0] + top_delay, placeX + left_delay, "  ");
+		mvwprintw(win, placeY[0] + top_delay, placeX + right_delay, "  ");
+	}
+
+	wattrset(win, COLOR_PAIR(3));
+
+	wattrset(win, 0);
+	wrefresh(win);
+
 }
 
-// リストを表示する関数
-void printScoreList(ScoreList *head) {
+// 表示選択におけるカーソルの表示
+void displayHistoryItemCursor(WINDOW *win, int select) {
+
+		// 項目の処理
+	int placeX;
+	int placeY[2];
+
+	getScoreItemCursorPlace(win, &placeX, placeY);
+
+	int top_delay = (-2);
+	int bottom_delay = 2;
+
+	int left_delay = (-4);
+	int line_length = 24;
+
+	wattrset(win, COLOR_PAIR(3));
+	mvwaddch(win, placeY[select] + top_delay, placeX + left_delay, ACS_ULCORNER);
+
+	mvwaddch(win, placeY[select] + bottom_delay, placeX + left_delay, ACS_LLCORNER);
+	for(int i = 1; i <= line_length; i++) {
+		mvwaddch(win, placeY[select] + top_delay, placeX + left_delay + i, ACS_HLINE);
+		mvwaddch(win, placeY[select] + bottom_delay, placeX + left_delay + i, ACS_HLINE);
+		wrefresh(win);
+		usleep(10000);
+	}
+
+	wattrset(win, 0);
+	wrefresh(win);
+
+}
+
+void displayHistoryFrame(WINDOW *win) {
+			// 項目の処理
+	int placeX;
+	int placeY[2];
+
+	getScoreItemCursorPlace(win, &placeX, placeY);
+
+		int length = 20;
+	int top_delay = (-1);
+	int bottom_delay = 1;
+	int left_delay = (-2);
+	wattrset(win, COLOR_PAIR(6));
+	for(int i = 0; i < 2; i++) {
+		mvwaddch(win, placeY[i] + top_delay, placeX + left_delay, ACS_ULCORNER);
+		whline(win, ACS_HLINE, length);
+		mvwaddch(win, placeY[i], placeX + left_delay, ACS_VLINE);
+		// 下かっこ
+		mvwaddch(win, placeY[i] + bottom_delay, placeX + left_delay, ACS_LLCORNER);
+		whline(win, ACS_HLINE, length);
+	}
+	wattrset(win, 0);
+
+	wrefresh(win);
+}
+
+void eraseHistoryItemCursor(WINDOW *win, int select) {
+
+
+	int placeX;
+	int placeY[2];
+
+	getScoreItemCursorPlace(win, &placeX, placeY);
+
+	int top_delay = (-2);
+	int bottom_delay = 2;
+
+	int left_delay = (-4);
+	int line_length = 24;
+
+	mvwaddch(win, placeY[select] + top_delay, placeX + left_delay, ' ');
+	mvwhline(win, placeY[select] + top_delay, placeX + left_delay + 1, ' ', line_length);
+	mvwaddch(win, placeY[select] + top_delay, placeX + left_delay + line_length + 1, ' ');
+
+	mvwaddch(win, placeY[select] + bottom_delay, placeX + left_delay, ' ');
+	mvwhline(win, placeY[select] + bottom_delay, placeX + left_delay + 1, ' ', line_length);
+	mvwaddch(win, placeY[select] + bottom_delay, placeX + left_delay + line_length + 1, ' ');
+
+	wrefresh(win);
+
+}
+
+// 得点を表示する
+void displayHistoryScore(WINDOW *win, int x, int y, ScoreList *head, int turn, int index) {
 	ScoreList *temp = head;
-	while (temp != NULL) {
-		for (int i = 0; i < 2; i++) {
-			printf("Name: %s\n", temp->players[i].name);
-			printf("Ace: %d\n", temp->players[i].ace);
-			printf("Deuce: %d\n", temp->players[i].deuce);
-			printf("Trey: %d\n", temp->players[i].trey);
-			printf("Four: %d\n", temp->players[i].four);
-			printf("Five: %d\n", temp->players[i].five);
-			printf("Six: %d\n", temp->players[i].six);
-			printf("Choice: %d\n", temp->players[i].choice);
-			printf("Four Dice: %d\n", temp->players[i].four_dice);
-			printf("Full House: %d\n", temp->players[i].full_house);
-			printf("Small Straight: %d\n", temp->players[i].small_straight);
-			printf("Big Straight: %d\n", temp->players[i].big_straight);
-			printf("Yahtzee: %d\n", temp->players[i].yahtzee);
-			printf("\n");
-		}
-		temp = temp->next;
-	}
-}
+	int placeX[2];
+	int placeY[12];
+	getScorePlaceX(x, placeX);
+	getScorePlaceY(y, placeY);
 
-// リストのメモリを解放する関数
-void freeScoreList(ScoreList **head) {
-	ScoreList *temp;
-	while (*head != NULL) {
-		temp = *head;
-		*head = (*head)->next;
-		free(temp->players[0].name);
-		free(temp->players[1].name);
-		free(temp);
-	}
-	head = NULL;
-}
-
-// リストの内容をファイルに書き込む関数
-int writeListToFile(WINDOW *win, ScoreList **head, const char *filename) {
-	FILE *file = fopen(filename, "w");
-	if (file == NULL) {
-		scoreFileError(win);
-		return 0;
-	}
-
-	ScoreList *temp;
-	temp = *head;
-	while (temp != NULL) {
-		for (int i = 0; i < 2; i++) {
-			fprintf(file, "%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
-				temp->players[i].name,
-				temp->players[i].ace,
-				temp->players[i].deuce,
-				temp->players[i].trey,
-				temp->players[i].four,
-				temp->players[i].five,
-				temp->players[i].six,
-				temp->players[i].choice,
-				temp->players[i].four_dice,
-				temp->players[i].full_house,
-				temp->players[i].small_straight,
-				temp->players[i].big_straight,
-				temp->players[i].yahtzee
-			);
-		}
+		// 指定されたインデックスのノードまで移動する
+	for (int i = 0; i < index && temp != NULL; i++) {
 		temp = temp->next;
 	}
 
-	fclose(file);
-
-	return 1;
-}
-
-// ListNodeの要素数を数えて返す関数
-int countScoreNode(ScoreList *head) {
-	int count = 0;
-	ScoreList *temp = head;
-	while (temp != NULL) {
-		count++;
-		temp = temp->next;
-	}
-	return count;
-}
-
-// リストの最後尾を解放する関数
-void freeLastNode(ScoreList **head) {
-	if (*head == NULL) {
+	if (temp == NULL) {
+		// 指定されたインデックスがリストの範囲外の場合のエラーハンドリングなどをここに追加する
+		// この例では何もしない
 		return;
 	}
 
-	ScoreList *temp = *head;
-	ScoreList *prev = NULL;
-	while (temp->next != NULL) {
-		prev = temp;
-		temp = temp->next;
-	}
+	int scores[] = {
+		temp->players[turn].ace, temp->players[turn].deuce,
+		temp->players[turn].trey, temp->players[turn].four,
+		temp->players[turn].five, temp->players[turn].six,
+		temp->players[turn].choice, temp->players[turn].four_dice,
+		temp->players[turn].full_house, temp->players[turn].small_straight,
+		temp->players[turn].big_straight, temp->players[turn].yahtzee
+	};
 
-	free(temp->players[0].name);
-	free(temp->players[1].name);
-	free(temp);
-
-	if (prev == NULL) {
-		*head = NULL;
-	} else {
-		prev->next = NULL;
-	}
-}
-
-// ListNodeの要素数を数えたうえで
-// 要素数が50より上の場合は50になるまで解放する
-void freeLastNodeIfOver50(ScoreList **head) {
-	while (countScoreNode(*head) > 50) {
-		freeLastNode(head);
-	}
-}
-
-// ファイルからリストを読み込む関数
-int readListFromFile(WINDOW *win, ScoreList **head, const char *filename) {
-	FILE *file = fopen(filename, "r");
-	if (file == NULL) {
-		// ファイルが見つからなかった場合、新しく生成して再度開く
-		file = fopen(filename, "w+");
-		if (file == NULL) {
-			// ファイルの生成に失敗した場合
-			scoreFileError(win);
-			return 0;
+	for (int i = 0; i < 12; i++) {
+		if (scores[i] != EMPTY) {
+			mvwprintw(win, placeY[i], placeX[turn], "%2d", scores[i]);
 		}
 	}
-
-	char buffer[256];
-	while (fgets(buffer, sizeof(buffer), file)) {
-		Player players[2];
-		char nameBuffer[2][50]; // 一時的に名前を保持するバッファ
-		for (int i = 0; i < 2; i++) {
-			if (sscanf(buffer, "%49[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
-					nameBuffer[i],
-					&players[i].ace,
-					&players[i].deuce,
-					&players[i].trey,
-					&players[i].four,
-					&players[i].five,
-					&players[i].six,
-					&players[i].choice,
-					&players[i].four_dice,
-					&players[i].full_house,
-					&players[i].small_straight,
-					&players[i].big_straight,
-					&players[i].yahtzee) != 13) {
-				break;
-			}
-			players[i].name = strdup(nameBuffer[i]); // 名前を動的に割り当てる
-			if (i == 1) {
-				// 最後のプレイヤーを読み込んだ後
-				Player *playerPointers[2] = { &players[0], &players[1] };
-				addNodeEndPlayer(head, playerPointers);
-			}
-			if(i == 0) {
-				if (!fgets(buffer, sizeof(buffer), file)) {
-					break;
-				}
-			}
-		}
-	}
-
-	fclose(file);
-	// 正常終了
-	return 1;
 }
 
-
-// 指定された番目の要素を返す関数
-Player* getElement(ScoreList *head, int index) {
+void displayHistoryName(WINDOW *win, int x, int y, ScoreList *head, int turn, int index) {
 	ScoreList *temp = head;
-	int i = 0;
-	while (temp != NULL) {
-		if (i == index) {
-			return temp->players;
-		}
+	int start_x = getNamePlaceX(x, turn);
+	int start_y = getNamePlaceY(y);
+
+	// 指定場所まで移動する
+	for (int i = 0; i < index && temp != NULL; i++) {
 		temp = temp->next;
-		i++;
 	}
-	return NULL;
+
+	if (temp == NULL) {
+
+		return;
+	}
+
+	char *name = temp->players[turn].name;
+
+	mvwprintw(win, start_y, start_x, "%s", name);
 }
 
-void inputHistory(WINDOW *win, Player *pl[]) {
-	ScoreList *temp;
+void displayHistoryTotalScore(WINDOW *win, int x, int y, ScoreList *head, int turn,int index) {
+	ScoreList *temp = head;
+	int placeX[2];
+	int placeY[3];
 
-	initializeScoreList(&temp);
-	readListFromFile(win, &temp, "score.txt");
-	addNodeBeginningPlayer(&temp, pl);
-	freeLastNodeIfOver50(&temp);
-	writeListToFile(win, &temp, "score.txt");
-	freeScoreList(&temp);
+	// ボーナス点
+	int point = 35;
+	int boarder = 63;
+	getScorePlaceX(x, placeX);
+	getTotalScorePlaceY(y, placeY);
+		// 指定場所まで移動する
+	for (int i = 0; i < index && temp != NULL; i++) {
+		temp = temp->next;
+	}
+
+	if (temp == NULL) {
+
+		return;
+	}
+
+	int total = calcTotalScore(&temp->players[turn]);
+
+	int subTotal = calcSubTotalScore(&temp->players[turn]);
+
+	mvwprintw(win, placeY[0], placeX[turn] - 2, "%2d / %2d", subTotal, boarder);
+
+	if(subTotal >= boarder) {
+		mvwprintw(win, placeY[1], placeX[turn], "+%2d", point);
+		wrefresh(win);
+	}
+	else {
+		mvwprintw(win, placeY[1], placeX[turn], "   ");
+		wrefresh(win);
+	}
+
+	mvwprintw(win, placeY[2], placeX[turn], "%d", total);
+	wrefresh(win);
+}
+
+void eraseHistoryTotalScore(WINDOW *win, int x, int y) {
+	int placeX[2];
+	int placeY[3];
+
+	int player_1 = 0;
+	int player_2 = 1;
+
+	getScorePlaceX(x, placeX);
+	getTotalScorePlaceY(y, placeY);
+
+
+	mvwprintw(win, placeY[0], placeX[player_1] - 2, "   ");
+	mvwprintw(win, placeY[1], placeX[player_1], "   ");
+	mvwprintw(win, placeY[2], placeX[player_1], "   ");
+	mvwprintw(win, placeY[0], placeX[player_2] - 2, "   ");
+	mvwprintw(win, placeY[1], placeX[player_2], "   ");
+	mvwprintw(win, placeY[2], placeX[player_2], "   ");
+	wrefresh(win);
 }

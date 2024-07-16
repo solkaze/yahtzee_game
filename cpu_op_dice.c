@@ -1,8 +1,8 @@
-#include "cpu_op_dice.h"
-#include "dice_list.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "cpu_op_dice.h"
+#include "dice_list.h"
 
 // 指定された配列の値に基づいてリストの要素をDELに書き換える関数
 void replaceNodesByBit(DiceList* head, int num, int size, unsigned int replaceIfBitIs);

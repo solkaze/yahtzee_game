@@ -1,9 +1,9 @@
 #ifndef GAME_CURSOR_H
 #define GAME_CURSOR_H
 
-#include "player.h"
-
 #include <ncurses.h>
+
+#include "player.h"
 
 // サイコロのカーソルを指す
 void diceCursorShape(WINDOW *win, int x, int y);

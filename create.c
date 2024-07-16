@@ -1,7 +1,7 @@
-#include "create.h"
-
 #include <time.h>
 #include <stdlib.h>
+
+#include "create.h"
 
 // サイコロを降る関数
 int rollDice();

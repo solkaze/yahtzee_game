@@ -1,35 +1,41 @@
-#include "player.h"
-#include "calc_score.h"
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "player.h"
+#include "calc_score.h"
+
 // 小計を計算する
 int calcSubTotalScore(Player *pl);
 
-// プレイヤーの点数を初期化する
-void initializePlayer(Player **pl) {
-	*pl = (Player *)malloc(sizeof(Player));
-	if (*pl == NULL) {
+Player *createPlayer() {
+	Player *pl = (Player *)malloc(sizeof(Player));
+	if (pl == NULL) {
 		fprintf(stderr, "Memory allocation failed\n");
 		exit(EXIT_FAILURE);
 	}
-	(*pl)->name = NULL;
+	initializePlayer(pl);
 
-	(*pl)->ace = EMPTY;
-	(*pl)->deuce = EMPTY;
-	(*pl)->trey = EMPTY;
-	(*pl)->four = EMPTY;
-	(*pl)->five = EMPTY;
-	(*pl)->six = EMPTY;
+	return pl;
+}
 
-	(*pl)->choice = EMPTY;
-	(*pl)->four_dice = EMPTY;
-	(*pl)->full_house = EMPTY;
-	(*pl)->small_straight = EMPTY;
-	(*pl)->big_straight = EMPTY;
-	(*pl)->yahtzee = EMPTY;
+// プレイヤーの点数を初期化する
+void initializePlayer(Player *pl) {
+	pl->name = NULL;
+
+	pl->ace = EMPTY;
+	pl->deuce = EMPTY;
+	pl->trey = EMPTY;
+	pl->four = EMPTY;
+	pl->five = EMPTY;
+	pl->six = EMPTY;
+
+	pl->choice = EMPTY;
+	pl->four_dice = EMPTY;
+	pl->full_house = EMPTY;
+	pl->small_straight = EMPTY;
+	pl->big_straight = EMPTY;
+	pl->yahtzee = EMPTY;
 }
 
 // 得点がすべて埋まったかどうか確認
@@ -128,68 +134,50 @@ int calcSubTotalScore(Player *pl) {
 	return total;
 }
 
-// プレイヤーの情報をコピーする
-// 結果保存用
-Player copyStructPlayer(Player *player) {
-		Player newPlayer;
-		newPlayer.ace = player->ace;
-		newPlayer.deuce = player->deuce;
-		newPlayer.trey = player->trey;
-		newPlayer.four = player->four;
-		newPlayer.five = player->five;
-		newPlayer.six = player->six;
-		newPlayer.choice = player->choice;
-		newPlayer.four_dice = player->four_dice;
-		newPlayer.full_house = player->full_house;
-		newPlayer.small_straight = player->small_straight;
-		newPlayer.big_straight = player->big_straight;
-		newPlayer.yahtzee = player->yahtzee;
-		newPlayer.name = strdup(player->name);
-
-		return newPlayer;
+void setScore(DiceList *dice, Player *pl, int select) {
+	switch (select) {
+	case 0:
+		setAce(dice, pl);
+		break;
+	case 1:
+		setDeuce(dice, pl);
+		break;
+	case 2:
+		setTrey(dice, pl);
+		break;
+	case 3:
+		setFour(dice, pl);
+		break;
+	case 4:
+		setFive(dice, pl);
+		break;
+	case 5:
+		setSix(dice, pl);
+		break;
+	case 6:
+		setChoice(dice, pl);
+		break;
+	case 7:
+		setFourDice(dice, pl);
+		break;
+	case 8:
+		setFullHouse(dice, pl);
+		break;
+	case 9:
+		setSmallStraight(dice, pl);
+		break;
+	case 10:
+		setBigStraight(dice, pl);
+		break;
+	case 11:
+		setYahtzee(dice, pl);
+		break;
+	default:
+		break;
+	}
 }
 
-//構造体からからの要素の数を計算する
-int getEmptyCount(Player *pl) {
-	int count = 0;
-	if (pl->ace == EMPTY) {
-		count++;
-	}
-	if (pl->deuce == EMPTY) {
-		count++;
-	}
-	if (pl->trey == EMPTY) {
-		count++;
-	}
-	if (pl->four == EMPTY) {
-		count++;
-	}
-	if (pl->five == EMPTY) {
-		count++;
-	}
-	if (pl->six == EMPTY) {
-		count++;
-	}
-	if (pl->choice == EMPTY) {
-		count++;
-	}
-	if (pl->four_dice == EMPTY) {
-		count++;
-	}
-	if (pl->full_house == EMPTY) {
-		count++;
-	}
-	if (pl->small_straight == EMPTY) {
-		count++;
-	}
-	if (pl->big_straight == EMPTY) {
-		count++;
-	}
-	if (pl->yahtzee == EMPTY) {
-		count++;
-	}
-	return count;
-}
+// ��イ����ンドを計算する
 
 // エースを計算する
 void setAce(DiceList *dice, Player *pl) {

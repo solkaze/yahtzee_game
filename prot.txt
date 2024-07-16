@@ -1,0 +1,53 @@
+// calc_score.h
+
+#ifndef CALC_SCORE_H
+#define CALC_SCORE_H
+
+#include "dice_list.h"
+
+// リスト内のvalueの数を調べ返す
+int countOccurrences(DiceList* head, int value);
+
+// サイコロの合計値を計算する
+int sumDice(DiceList* head);
+
+// 1の目を計算する
+int calcAce(DiceList* head);
+
+// 2の目を計算する
+int calcDeuce(DiceList* head);
+
+// 3の目を計算する
+int calcTrey(DiceList* head);
+
+// 4の目を計算する
+int calcFour(DiceList* head);
+
+// 5の目を計算する
+int calcFive(DiceList* head);
+
+// 6の目を計算する
+int calcSix(DiceList* head);
+
+// チョイスの計算
+int calcChoice(DiceList* head);
+
+int calcFourDice(DiceList* head);
+
+// フルハウスの計算
+int calcFullHouse(DiceList* head);
+
+// スモールストレートの計算
+int calcSmallStraight(DiceList* head);
+
+// ビッグストレートの計算
+int calcBigStraight(DiceList* head);
+
+// ヨットの計算
+int calcYahtzee(DiceList* head);
+
+//エースからヨットまで全て計算し値の一番大きくなるスコアを返す
+// 重みを考慮する
+int calculateScore(DiceList* head);
+
+#endif // CALC_SCORE_H

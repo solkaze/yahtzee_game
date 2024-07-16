@@ -1,7 +1,3 @@
-#include "player.h"
-#include "screen_place.h"
-
-
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
@@ -9,7 +5,10 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#define NAME_LENGTH 20
+#include "player.h"
+#include "screen_place.h"
+
+#define NAME_LENGTH 12
 
 void inputName(WINDOW *win,int x, int y, bool cpu, Player *pl, int turn);
 
@@ -20,13 +19,11 @@ void eraseInputNameFrame(WINDOW *win);
 
 void displayPlayerName(WINDOW *win,int x, int y, Player *pl, int turn);
 
-// 枠は消さない
-void eraseNameContent(WINDOW *win);
-
 void setSetting(WINDOW *win) {
 	echo();
 	nodelay(win, FALSE);
 	keypad(win, FALSE);
+	curs_set(1);
 	nocbreak();
 }
 
@@ -34,13 +31,14 @@ void resetSetting(WINDOW *win) {
 	noecho();
 	nodelay(win, TRUE);
 	keypad(win, TRUE);
+	curs_set(0);
 	cbreak();
 }
 
 void inputName(WINDOW *win,int x, int y, bool cpu, Player *pl, int turn) {
 
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 7;
 
@@ -58,7 +56,7 @@ void inputName(WINDOW *win,int x, int y, bool cpu, Player *pl, int turn) {
 		char name[NAME_LENGTH];
 		memset(name, '\0', sizeof(name));
 
-		mvwprintw(name_win, 1, 1, "Player%dを入力してください(半角12文字 ，全角6文字以内)", turn + 1);
+		mvwprintw(name_win, 1, 1, "Player%dを入力してください(半角12文字 ，全角4文字以内)", turn + 1);
 
 		int name_input_place_x = 1;
 		int name_input_delay = 3;
@@ -78,7 +76,7 @@ void inputName(WINDOW *win,int x, int y, bool cpu, Player *pl, int turn) {
 				wrefresh(name_win);
 				name_success = true;
 			}
-			else if(strlen(name) > 20) {
+			else if(strlen(name) > NAME_LENGTH) {
 				werase(name_win);
 				box(name_win, 0, 0);
 				mvwprintw(name_win, 1, 1, "文字数制限に達しました　入力をやり直してください");
@@ -100,7 +98,7 @@ void inputName(WINDOW *win,int x, int y, bool cpu, Player *pl, int turn) {
 				wrefresh(name_win);
 				name_success = true;
 			}
-			else if(strlen(name) > 20) {
+			else if(strlen(name) > NAME_LENGTH) {
 				werase(name_win);
 				box(name_win, 0, 0);
 				mvwprintw(name_win, 1, 1, "文字数制限に達しました　入力をやり直してください");

@@ -1,7 +1,3 @@
-#include "operation_help.h"
-#include "error.h"
-#include "screen_place.h"
-
 #include <locale.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -10,6 +6,10 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include "operation_help.h"
+#include "error.h"
+#include "screen_place.h"
 
 int readFile(WINDOW *win, const char *filename, int max_length, int subwin_x, int subwin_y) {
 	setlocale(LC_ALL, ""); // ロケールを設定してマルチバイト文字を扱えるようにする
@@ -76,7 +76,7 @@ void createHelpScreen(WINDOW *win) {
 	int placeX;
 	int placeY[4];
 
-	getHelpItemCursorPlace(win, placeY, &placeX);
+	getHelpItemCursorPlace(win, &placeX, placeY);
 
 	mvwprintw(win, placeY[0], placeX, "%s", item[0]);
 	mvwprintw(win, placeY[1], placeX, "%s", item[1]);
@@ -90,7 +90,7 @@ void displayHelpItemCursor(WINDOW *win, int select) {
 	int placeX;
 	int placeY[4];
 
-	getHelpItemCursorPlace(win, placeY, &placeX);
+	getHelpItemCursorPlace(win, &placeX, placeY);
 
 	int top_delay = (-2);
 	int bottom_delay = 2;
@@ -118,7 +118,7 @@ void displayHelpFrame(WINDOW *win) {
 	int placeX;
 	int placeY[4];
 
-	getHelpItemCursorPlace(win, placeY, &placeX);
+	getHelpItemCursorPlace(win, &placeX, placeY);
 
 		int length = 20;
 	int top_delay = (-1);
@@ -144,7 +144,7 @@ void eraseHelpItemCursor(WINDOW *win, int select) {
 	int placeX;
 	int placeY[4];
 
-	getHelpItemCursorPlace(win, placeY, &placeX);
+	getHelpItemCursorPlace(win, &placeX, placeY);
 
 	int top_delay = (-2);
 	int bottom_delay = 2;

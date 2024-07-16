@@ -1,10 +1,3 @@
-#include "player.h"
-#include "message.h"
-#include "dice_list.h"
-#include "calc_score.h"
-#include "screen_place.h"
-#include "calc_score.h"
-
 #include <stdio.h>
 #include <ncurses.h>
 #include <unistd.h>
@@ -12,9 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "player.h"
+#include "message.h"
+#include "dice_list.h"
+#include "calc_score.h"
+#include "screen_place.h"
+#include "calc_score.h"
+
 void displayMessageFourDice(WINDOW *win) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 14;
 	WINDOW *sub_win = derwin(win, height, width, start_y, start_x);
@@ -50,7 +50,7 @@ void displayMessageFourDice(WINDOW *win) {
 
 void displayMessageFullHouse(WINDOW *win) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 14;
 
@@ -87,7 +87,7 @@ void displayMessageFullHouse(WINDOW *win) {
 
 void displayMessageSmallStraight(WINDOW *win) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 14;
 	WINDOW *sub_win = derwin(win, height, width, start_y, start_x);
@@ -123,7 +123,7 @@ void displayMessageSmallStraight(WINDOW *win) {
 
 void displayMessageBigStraight(WINDOW *win) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 14;
 	WINDOW *sub_win = derwin(win, height, width, start_y, start_x);
@@ -159,7 +159,7 @@ void displayMessageBigStraight(WINDOW *win) {
 
 void displayMessageYahtzee(WINDOW *win) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 14;
 	WINDOW *sub_win = derwin(win, height, width, start_y, start_x);
@@ -234,7 +234,7 @@ void displayMessage(WINDOW *win, DiceList *dice, Player *pl) {
 
 void displayWinMessage(WINDOW *win, Player *pl) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 16;
 	WINDOW *sub_win = derwin(win, height, width, start_y, start_x);
@@ -279,7 +279,7 @@ void displayWinMessage(WINDOW *win, Player *pl) {
 // 引き分けメッセージ
 void displayDrawMessage(WINDOW *win) {
 	int start_x, start_y;
-	getMessagePlace(&start_y, &start_x);
+	getMessagePlace(&start_x, &start_y);
 	int width = 73;
 	int height = 16;
 	WINDOW *sub_win = derwin(win, height, width, start_y, start_x);
@@ -312,4 +312,16 @@ void displayDrawMessage(WINDOW *win) {
 	werase(sub_win);
 	delwin(sub_win);
 	wrefresh(win);
+}
+
+void displayWinner(WINDOW *win, Player *player[]) {
+	if(calcTotalScore(player[0]) > calcTotalScore(player[1])) {
+		displayWinMessage(win, player[0]);
+	}
+	else if(calcTotalScore(player[1]) > calcTotalScore(player[0])) {
+		displayWinMessage(win, player[1]);
+	}
+	else {
+		displayDrawMessage(win);
+	}
 }

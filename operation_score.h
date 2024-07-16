@@ -1,47 +1,36 @@
 #ifndef OPERATION_SCORE_H
 #define OPERATION_SCORE_H
 
-#include "player.h"
+#include "op_score_list.h"
 
-#include <ncurses.h>
+void displayScoreHistory(WINDOW *win, ScoreList *score_list, int history_select, int x, int y);
 
-// リストのノードの定義
-typedef struct ListNode {
-	Player players[2]; // プレイヤーの配列を要素とする
-	struct ListNode *next;
-}ScoreList;
+void initScoreScreen(WINDOW *win);
 
-void initializeScoreList(ScoreList **head);
+void createScoreScreen(WINDOW *win, int history_select_max);
 
-// リストの先頭にノードを追加する
-void addNodeBeginningPlayer(ScoreList** head, Player *players[]);
+void displayPage(WINDOW *win, int history_select);
 
-// リストの末尾にノードを追加する
-void addNodeEndPlayer(ScoreList** head, Player *players[]);
+// カーソル表示を行う
+void displayHistoryItemCursor(WINDOW *win, int select);
 
-// リストを表示する関数
-void printScoreList(ScoreList *head);
+// カーソルを消す
+void eraseHistoryItemCursor(WINDOW *win, int select);
 
-// リストのメモリを解放する関数
-void freeScoreList(ScoreList **head);
+void displayHistoryScore(WINDOW *win, int x, int y, ScoreList *head, int turn, int index);
 
-// リストの内容をファイルに書き込む関数
-int writeListToFile(WINDOW *win, ScoreList **head, const char *filename);
+void displayHistoryName(WINDOW *win, int x, int y, ScoreList *head, int turn, int index);
 
-// ListNodeの要素数を数えて返す関数
-int countScoreNode(ScoreList *head);
+void eraseScoreHistory(WINDOW *win, int x, int y);
 
-// ListNodeの要素数を数えたうえで
-// 要素数が50より上の場合は50になるまで解放する
-void freeLastNodeIfOver50(ScoreList **head);
+// 履歴のメージ移動のカーソルを表示する関数
+void displayPageCursor(WINDOW *win, int select, int history_select, int history_max);
 
-// ファイルからリストを読み込む関数
-int readListFromFile(WINDOW *win, ScoreList **head, const char *filename);
+void displayHistoryTotalScore(WINDOW *win, int x, int y, ScoreList *head, int turn,int index);
 
-// 指定された番目の要素を返す関数
-Player* getElement(ScoreList *head, int index);
+void eraseHistoryTotalScore(WINDOW *win, int x, int y);
 
-// Playerの構造体を受け取り、ファイルへ書き込みまで行う
-void inputHistory(WINDOW *win, Player *pl[]);
+// 見やすさを上げるフレームを生成
+void displayHistoryFrame(WINDOW *win);
 
 #endif

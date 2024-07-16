@@ -25,19 +25,16 @@ unsigned int calculateAND(unsigned int num1, unsigned int num2);
 unsigned int calculateOR(unsigned int num1, unsigned int num2);
 
 // 指定の数だけ1を敷き詰める関数
-int createBitMask(int n);
+int createBitMask(int num);
 
 // 指定の数だけ先頭から1を敷き詰める関数
-int createLeadingOnesMask(int n);
-
-// 指定した上位ビットを抽出して整数を返す関数
-int extractUpperBits(int num, unsigned int bit_count);
+int createLeadingOnesMask(int num);
 
 // 指定した上位ビットを抽出して整数を返す関数
 int extractUpperBits(int num, unsigned int bit_count);
 
 // 指定した下位ビットを抽出して整数を返す関数
-int extractLowerBits(int num, int bit_count);
+int extractLowerBits(int num, unsigned int bit_count);
 
 // 指定した位置のビットが1か0かを返す関数
 int getBit(int num, int position);

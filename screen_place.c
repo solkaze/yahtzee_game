@@ -1,19 +1,5 @@
 #include <ncurses.h>
 
-void getMenuPlace(WINDOW *win, int *y, int placeX[5]) {
-	int menuInterval = 20;
-	int menuLength = 16;
-	int screen_x, screen_y;
-	getmaxyx(win, screen_y, screen_x);
-
-	*y = screen_y / 2 + 15;
-	placeX[0] = (screen_x - (menuInterval*4 + menuLength)) / 2;
-	placeX[1] = placeX[0] + menuInterval;
-	placeX[2] = placeX[1] + menuInterval;
-	placeX[3] = placeX[2] + menuInterval;
-	placeX[4] = placeX[3] + menuInterval;
-}
-
 void getScorePlaceX(int x, int placeX[2]) {
 	int player_first_place = x + 27;
 	int player_second_place = player_first_place + 15;
@@ -128,16 +114,21 @@ int getNamePlaceY(int y) {
 	return y + 1;
 }
 
-void setInitNamePlace(WINDOW *win, int place[2]) {
-	int window_x, window_y;
-	getmaxyx(win, window_y, window_x);
-	int center_x = window_x / 2;
-	int center_y = window_y / 2;
-	place[0] = center_y - 4;
-	place[1] = center_x - 7;
+void getMenuPlace(WINDOW *win, int placeX[5], int *y) {
+	int menuInterval = 20;
+	int menuLength = 16;
+	int screen_x, screen_y;
+	getmaxyx(win, screen_y, screen_x);
+
+	*y = screen_y / 2 + 15;
+	placeX[0] = (screen_x - (menuInterval*4 + menuLength)) / 2;
+	placeX[1] = placeX[0] + menuInterval;
+	placeX[2] = placeX[1] + menuInterval;
+	placeX[3] = placeX[2] + menuInterval;
+	placeX[4] = placeX[3] + menuInterval;
 }
 
-void getScoreItemCursorPlace(WINDOW *win, int placeY[2], int *placeX) {
+void getScoreItemCursorPlace(WINDOW *win, int *placeX, int placeY[2]) {
 	int screen_x;
 	int screen_y;
 
@@ -152,7 +143,7 @@ void getScoreItemCursorPlace(WINDOW *win, int placeY[2], int *placeX) {
 	placeY[1] = placeY[0] + item_delay_y;
 }
 
-void getHelpItemCursorPlace(WINDOW *win, int placeY[4], int *placeX) {
+void getHelpItemCursorPlace(WINDOW *win, int *placeX, int placeY[4]) {
 	int screen_x;
 	int screen_y;
 
@@ -169,7 +160,7 @@ void getHelpItemCursorPlace(WINDOW *win, int placeY[4], int *placeX) {
 	placeY[3] = placeY[2] + item_delay_y;
 }
 
-void getRerollMessage(WINDOW *win, int *placeY, int *placeX) {
+void getRerollMessage(WINDOW *win, int *placeX, int *placeY) {
 	int screen_x, screen_y;
 
 	getmaxyx(win, screen_y, screen_x);
@@ -182,14 +173,14 @@ void getRerollMessage(WINDOW *win, int *placeY, int *placeX) {
 
 }
 
-void getMessagePlace(int *placeY, int *placeX) {
+void getMessagePlace(int *placeX, int *placeY) {
 
 	*placeX = 84;
 	*placeY = 17;
 
 }
 
-void rerollButtonPlace(WINDOW *win, int *placeY, int *placeX) {
+void rerollButtonPlace(WINDOW *win, int *placeX, int *placeY) {
 	int screen_y, screen_x;
 	getmaxyx(win, screen_y, screen_x);
 	int center_y = screen_y / 2;

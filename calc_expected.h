@@ -4,7 +4,7 @@
 #include "dice_list.h"
 #include "player.h"
 
-int calculateWeightedMaxScore(DiceList* head, Player *pl);
+int calcWeightedMaxScore(DiceList* head, Player *pl);
 
 double calcDiceZero(DiceList *dice, Player *pl);
 

@@ -1,13 +1,13 @@
+#include <ncurses.h>
+#include <time.h>
+#include <locale.h>
+#include <unistd.h>
+
 #include "dice_list.h"
 #include "dice.h"
 #include "create.h"
 #include "operation_dice.h"
 #include "screen_place.h"
-
-#include <ncurses.h>
-#include <time.h>
-#include <locale.h>
-#include <unistd.h>
 
 // すべてのサイコロを表示する関数
 void displayAllDice(WINDOW *win, DiceList *dice, int num);

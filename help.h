@@ -3,8 +3,10 @@
 
 #include <ncurses.h>
 
+#include "window_struct.h"
+
 //function to display help screen
 
-void helpScreen(WINDOW *win);
+void helpScreen(GameWin *wins);
 
 #endif

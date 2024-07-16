@@ -1,9 +1,9 @@
 #ifndef OPERATION_DICE_H
 #define OPERATION_DICE_H
 
-#include "dice_list.h"
-
 #include <ncurses.h>
+
+#include "dice_list.h"
 
 // すべてのサイコロを表示する関数
 void displayAllDice(WINDOW *win, DiceList *dice, int num);

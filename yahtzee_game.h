@@ -4,12 +4,8 @@
 #include <ncurses.h>
 #include <stdbool.h>
 
-void setDebagMode(bool mode);
+#include "window_struct.h"
 
-bool getDebagMode(void);
-
-void setVsCpu(bool flag);
-
-void yahtzeeGame(WINDOW *win, WINDOW *secondWin);
+void yahtzeeGame(GameWin *wins);
 
 #endif // YAHTZEE_GAME_H

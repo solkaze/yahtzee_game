@@ -1,13 +1,22 @@
+#include <stdio.h>
+#include <unistd.h>
+
 #include "dice_list.h"
 #include "player.h"
 #include "calc_score.h"
 
-#include <stdio.h>
-#include <unistd.h>
+int calcWeightedMaxScore(DiceList* head, Player *pl);
+double calcDiceZero(DiceList *dice, Player *pl);
+double calcDiceOne(DiceList *dice, Player *pl);
+double calcDiceTwo(DiceList *dice, Player *pl);
+double calcDiceThree(DiceList *dice, Player *pl);
+double calcDiceFour(DiceList *dice, Player *pl);
+double calcDiceFive(DiceList *dice, Player *pl);
+
 
 //エースからヨットまで全て計算し値の一番大きくなるスコアを返す
 // エースからヨットまで全て計算し、プレイヤーのスコアがEMPTYである場合のみ最大スコアを返す
-int calculateWeightedMaxScore(DiceList* head, Player *pl) {
+int calcWeightedMaxScore(DiceList* head, Player *pl) {
     int scores[] = {
         (pl->ace == EMPTY ? calcAce(head) : EMPTY),
         (pl->deuce == EMPTY ? calcDeuce(head) : EMPTY),
@@ -43,7 +52,7 @@ double calcDiceZero(DiceList *dice, Player *pl) {
 	DiceList *con_list;
 	initializeDiceList(&con_list);
 	copyList(dice, &con_list);
-	int max = calculateWeightedMaxScore(con_list, pl);
+	int max = calcWeightedMaxScore(con_list, pl);
 	freeList(&con_list);
 
 	return max;
@@ -67,7 +76,7 @@ double calcDiceOne(DiceList *dice, Player *pl) {
 		updateNodeAt(con_list, 0, i);
 
 		// 最大となるものをすべて足し合わせる
-		total_point += calculateWeightedMaxScore(con_list, pl);
+		total_point += calcWeightedMaxScore(con_list, pl);
 	}
 	freeList(&con_list);
 
@@ -93,7 +102,7 @@ double calcDiceTwo(DiceList *dice, Player *pl) {
 			updateNodeAt(con_list, 1, j);
 
 			// 最大となるものをすべて足し合わせる
-			total_point += calculateWeightedMaxScore(con_list, pl);
+			total_point += calcWeightedMaxScore(con_list, pl);
 		}
 	}
 	freeList(&con_list);
@@ -123,7 +132,7 @@ double calcDiceThree(DiceList *dice, Player *pl) {
 				updateNodeAt(con_list, 2, k);
 
 				// 最大となるものをすべて足し合わせる
-				total_point += calculateWeightedMaxScore(con_list, pl);
+				total_point += calcWeightedMaxScore(con_list, pl);
 			}
 		}
 	}
@@ -157,7 +166,7 @@ double calcDiceFour(DiceList *dice, Player *pl) {
 					updateNodeAt(con_list, 3, l);
 
 					// 最大となるものをすべて足し合わせる
-					total_point += calculateWeightedMaxScore(con_list, pl);
+					total_point += calcWeightedMaxScore(con_list, pl);
 				}
 			}
 		}
@@ -195,7 +204,7 @@ double calcDiceFive(DiceList *dice, Player *pl) {
 						updateNodeAt(con_list, 4, m);
 
 						// 最大となるものをすべて足し合わせる
-						total_point += calculateWeightedMaxScore(con_list, pl);
+						total_point += calcWeightedMaxScore(con_list, pl);
 					}
 				}
 			}

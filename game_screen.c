@@ -1,12 +1,12 @@
-#include "game_screen.h"
-#include "operation_dice.h"
-#include "screen_place.h"
-
 #include <ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <locale.h>
+
+#include "game_screen.h"
+#include "operation_dice.h"
+#include "screen_place.h"
 
 void printScoreboard(WINDOW *win, int x, int y);
 void keepDiceFrame(WINDOW *win);
@@ -252,7 +252,7 @@ void keepDiceFrame(WINDOW *win) {
 void rerollPoint(WINDOW *win) {
 	int place_x, place_y;
 
-	rerollButtonPlace(win, &place_y, &place_x);
+	rerollButtonPlace(win,&place_x, &place_y);
 
 	int top_h_line = place_y - 2;
 	int left_v_line = place_x - 2;
@@ -274,7 +274,7 @@ void rerollPoint(WINDOW *win) {
 void displayRerollMessage(WINDOW *win, int reroll_count) {
 	int place_x, place_y;
 
-	getRerollMessage(win, &place_y, &place_x);
+	getRerollMessage(win, &place_x, &place_y);
 
 	int left_v_line = place_x - 2;
 	int bottom_h_line = place_y + 1;
@@ -299,7 +299,7 @@ void eraseRerollMessage(WINDOW *win) {
 	int place_x, place_y;
 	int length = 17;
 
-	getRerollMessage(win, &place_y, &place_x);
+	getRerollMessage(win, &place_x, &place_y);
 
 	mvwhline(win, place_y, place_x, ' ', length);
 	mvwhline(win, place_y + 1, place_x - 2, ' ', length + 4);

@@ -1,12 +1,17 @@
 #ifndef CPU_H
 #define CPU_H
+
+#include <ncurses.h>
+
 #include "cpu_queue.h"
 #include "dice_list.h"
 #include "player.h"
 
-#include <ncurses.h>
-
 #define MAX_TRIAL 32
+
+void setComputer(bool flag);
+
+bool getComputer();
 
 int CPUAction(Queue *q);
 

@@ -3,11 +3,7 @@
 
 #include <ncurses.h>
 
-void getMenuPlace(WINDOW *win, int *y, int placeX[5]);
-
 void getScorePlaceX(int x, int placeX[2]);
-
-void getCursorPlaceX(int x, int placeX[2]);
 
 void getScorePlaceY(int y, int placeY[12]);
 
@@ -31,14 +27,16 @@ int getKeepDiceX(int size_x, int el);
 // キープ用のサイコロのy座標を取得
 int getKeepDiceY(int size_y);
 
-void getScoreItemCursorPlace(WINDOW *win, int placeY[2],int *placeX);
+void getMenuPlace(WINDOW *win, int placeX[5], int *y);
 
-void getHelpItemCursorPlace(WINDOW *win, int placeY[4], int *placeX);
+void getScoreItemCursorPlace(WINDOW *win,int *placeX, int placeY[2]);
 
-void getRerollMessage(WINDOW *win, int *placeY, int *placeX);
+void getHelpItemCursorPlace(WINDOW *win, int *placeX, int placeY[4]);
 
-void getMessagePlace(int *placeY, int *placeX);
+void getRerollMessage(WINDOW *win, int *placeX, int *placeY);
 
-void rerollButtonPlace(WINDOW *win, int *placeY, int *placeX);
+void getMessagePlace(int *placeX, int *placeY);
+
+void rerollButtonPlace(WINDOW *win, int *placeX, int *placeY);
 
 #endif // SCREEN_PLACE_H

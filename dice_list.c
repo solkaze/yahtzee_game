@@ -1,8 +1,8 @@
-#include "dice_list.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+
+#include "dice_list.h"
 
 // リストを初期化
 void initializeDiceList(DiceList** head) {

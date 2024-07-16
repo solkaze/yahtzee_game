@@ -1,11 +1,10 @@
 //* 得点の計算を定義
 
-#include "dice_list.h"
-#include "calc_score.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "dice_list.h"
+#include "calc_score.h"
 // リスト内のvalueの数を調べ返す
 int countOccurrences(DiceList* head, int value) {
 	int count = 0;
@@ -91,22 +90,22 @@ int calcSmallStraight(DiceList* head) {
     if (head == NULL) {
         return 0;
     }
-    
+
     int counts[6] = {0}; // インデックスは1から6に対応
-    
+
     while (head != NULL) {
         if (head->data >= 1 && head->data <= 6) {
             counts[head->data - 1]++;
         }
         head = head->next;
     }
-    
+
     if ((counts[0] && counts[1] && counts[2] && counts[3]) ||
         (counts[1] && counts[2] && counts[3] && counts[4]) ||
         (counts[2] && counts[3] && counts[4] && counts[5])) {
         return 15;
     }
-    
+
     return 0;
 }
 
@@ -115,21 +114,21 @@ int calcBigStraight(DiceList* head) {
     if (head == NULL) {
         return 0;
     }
-    
+
     int counts[6] = {0}; // インデックスは1から6に対応
-    
+
     while (head != NULL) {
         if (head->data >= 1 && head->data <= 6) {
             counts[head->data - 1]++;
         }
         head = head->next;
     }
-    
+
     if ((counts[0] && counts[1] && counts[2] && counts[3] && counts[4]) ||
         (counts[1] && counts[2] && counts[3] && counts[4] && counts[5])) {
         return 30;
     }
-    
+
     return 0;
 }
 
@@ -141,31 +140,4 @@ int calcYahtzee(DiceList* head) {
 		}
 	}
 	return 0;
-}
-
-//エースからヨットまで全て計算し値の一番大きくなるスコアを返す
-int calculateScore(DiceList* head) {
-	int scores[] = {
-		calcAce(head),
-		calcDeuce(head),
-		calcTrey(head),
-		calcFour(head),
-		calcFive(head),
-		calcSix(head),
-		calcChoice(head),
-		calcFourDice(head),
-		calcFullHouse(head),
-		calcSmallStraight(head),
-		calcBigStraight(head),
-		calcYahtzee(head)
-	};
-
-	int maxScore = 0;
-	for (int i = 0; i < 12; i++) {
-		if (scores[i] > maxScore) {
-			maxScore = scores[i];
-		}
-	}
-
-	return maxScore;
 }

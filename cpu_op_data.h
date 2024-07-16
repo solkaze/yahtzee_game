@@ -7,7 +7,7 @@
 #include "dice_list.h"
 
 // もしすでに埋まっているならばその行にはFULLを代入する
-void searchScoreArray(Player *pl, DiceList *di, int score[SCORE_MAX_NUM], float weights[SCORE_MAX_NUM]);
+void searchScoreArray(Player *pl, DiceList *di, int score[SCORE_MAX_NUM], double weights[SCORE_MAX_NUM]);
 
 // 配列内のスコアの場所を返す
 int findScoreIndex(int score[SCORE_MAX_NUM], int target);

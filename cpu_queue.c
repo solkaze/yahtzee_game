@@ -1,8 +1,8 @@
-#include "cpu_queue.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+
+#include "cpu_queue.h"
 
 // キューの初期化
 Queue* createQueue() {

@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <unistd.h>
+
 #include "cpu_queue.h"
 #include "dice_list.h"
 #include "calc_score.h"
@@ -9,16 +12,19 @@
 #include "operation_bit.h"
 #include "cpu_op_data.h"
 
-#include <stdio.h>
-#include <unistd.h>
+static bool vs_cpu_flag = FALSE;
 
-// void playCpu(DiceList *dice, Player *pl) {
-//     int trial_bit_array[MAX_TRIAL];
-// }
+void setComputer(bool flag) {
+	vs_cpu_flag = flag;
+}
+
+bool getComputer() {
+	return vs_cpu_flag;
+}
 
 void scoreDecisionAction(Queue *q, DiceList *dice, Player *pl) {
 	int score[SCORE_MAX_NUM];
-	float weight[SCORE_MAX_NUM] = {1.03, 1.02, 1.01, 1.0, 1.05, 1.08, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0};
+	double weight[SCORE_MAX_NUM] = {1.03, 1.02, 1.01, 1.0, 1.05, 1.08, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0};
 	// サイコロとプレイヤーの点数から配列を生成する
 	searchScoreArray(pl, dice, score, weight);
 	// どれだけ下ればいいかを決定する
@@ -46,9 +52,10 @@ void choiceHighest(DiceList *dice, Player *pl, double *max_value, unsigned int *
 	// 全32通りの一番点数が獲得できる確率の高いものを探す
 	for(int i = 0; i < MAX_TRIAL; i++) {
 
+		copyList(dice, &temp);
+
 		// 1の値の個数を調べる
 		bit_count = countOnesIn5bitBinary(i);
-		copyList(dice, &temp);
 		// 消去処理
 		deleteByBit(&temp, i, MAX_BITS, 1);
 		// ビットに応じて処理を変える

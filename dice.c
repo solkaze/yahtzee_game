@@ -1,7 +1,3 @@
-#include "dice.h"
-#include "player.h"
-#include "dice_list.h"
-
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +6,10 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <time.h>
+
+#include "dice.h"
+#include "player.h"
+#include "dice_list.h"
 
 void moduleOne(WINDOW *win, int x, int y);
 void moduleTwo(WINDOW *win, int x, int y);
@@ -21,7 +21,7 @@ void moduleSeven(WINDOW *win, int x, int y);
 void moduleEight(WINDOW *win, int x, int y);
 void moduleNine(WINDOW *win, int x, int y);
 
-void DiceFrame(WINDOW *win, int x, int y);
+void diceFrame(WINDOW *win, int x, int y);
 
 void displayOne(WINDOW *win, int x, int y);
 void displayTwo(WINDOW *win, int x, int y);
@@ -35,7 +35,7 @@ void eraseDice(WINDOW *win, int x, int y);
 
 
 void displayDice(WINDOW *win, int value , int x, int y) {
-	DiceFrame(win, x, y);
+	diceFrame(win, x, y);
 	switch(value) {
 		case 1:
 			displayOne(win, x, y);
@@ -60,7 +60,7 @@ void displayDice(WINDOW *win, int value , int x, int y) {
 	}
 }
 
-void DiceFrame(WINDOW *win, int x, int y) {
+void diceFrame(WINDOW *win, int x, int y) {
 	// 横17マス
 	// 縦8マス
 	int width_dice = 15; // 0～16 = 17マス

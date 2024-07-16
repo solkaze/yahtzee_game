@@ -10,25 +10,27 @@
 typedef struct player{
 	char *name;
 
-	int ace;            // エース
-	int deuce;          // デュース
-	int trey;           // トレイ
-	int four;           // フォー
-	int five;           // ファイブ
-	int six;            // シックス
+	int ace;             // エース
+	int deuce;           // デュース
+	int trey;            // トレイ
+	int four;            // フォー
+	int five;            // ファイブ
+	int six;             // シックス
 
-	int choice;         // チョイス
+	int choice;          // チョイス
 
 	int four_dice;       // フォーダイス
 	int full_house;      // フルハウス
 	int small_straight;  // S.ストレート
 	int big_straight;    // B.ストレート
-	int yahtzee;        // ヨット
+	int yahtzee;         // ヨット
 
 }Player;
 
+Player *createPlayer();
+
 // Playerの情報を初期化
-void initializePlayer(Player **pl);
+void initializePlayer(Player *pl);
 
 // Playerの得点表がすべて埋まっているかを確認
 int isFull(Player *pl);
@@ -39,9 +41,7 @@ int calcTotalScore(Player *pl);
 // 小計の計算
 int calcSubTotalScore(Player *pl);
 
-// プレイヤーの情報をコピーする
-// 結果保存用
-Player copyStructPlayer(Player *player);
+void setScore(DiceList *dice, Player *pl, int select);
 
 // エースを計算する
 void setAce(DiceList *dice, Player *pl);

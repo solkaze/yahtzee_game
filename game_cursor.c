@@ -1,11 +1,11 @@
+#include <ncurses.h>
+#include <stdlib.h>
+#include <locale.h>
+
 #include "game_cursor.h"
 #include "operation_dice.h"
 #include "player.h"
 #include "screen_place.h"
-
-#include <ncurses.h>
-#include <stdlib.h>
-#include <locale.h>
 
 #ifdef EMPTY
 #undef EMPTY
@@ -366,7 +366,7 @@ int initScoreCursor(Player *pl) {
 void printRerollCursor(WINDOW *win) {
 	int screen_x, screen_y;
 
-	rerollButtonPlace(win, &screen_y, &screen_x);
+	rerollButtonPlace(win, &screen_x, &screen_y);
 
 	int top_h_line = screen_y - 3;
 	int left_v_line = screen_x - 4;
@@ -388,7 +388,7 @@ void printRerollCursor(WINDOW *win) {
 void eraseRerollCursor(WINDOW *win) {
 	int screen_x, screen_y;
 
-	rerollButtonPlace(win, &screen_y, &screen_x);
+	rerollButtonPlace(win, &screen_x, &screen_y);
 
 	int top_h_line = screen_y - 3;
 	int left_v_line = screen_x - 4;

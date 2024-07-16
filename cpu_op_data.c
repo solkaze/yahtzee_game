@@ -1,4 +1,3 @@
-
 #include "dice_list.h"
 #include "player.h"
 #include "calc_score.h"
@@ -6,7 +5,7 @@
 
 // スコアのリストを生成する関数
 // もしすでに埋まっているならばその行にはFULLを代入する
-void searchScoreArray(Player *pl, DiceList *di, int score[SCORE_MAX_NUM], float weights[SCORE_MAX_NUM]) {
+void searchScoreArray(Player *pl, DiceList *di, int score[SCORE_MAX_NUM], double weights[SCORE_MAX_NUM]) {
 	// 配列内の各スコアに対する Player 構造体のメンバを指すポインタを設定
 	int* player_scores[] = {&(pl->ace), &(pl->deuce), &(pl->trey), &(pl->four), &(pl->five), &(pl->six), &(pl->choice), &(pl->four_dice), &(pl->full_house), &(pl->small_straight), &(pl->big_straight), &(pl->yahtzee)};
 
