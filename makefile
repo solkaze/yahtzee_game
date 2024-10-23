@@ -17,6 +17,7 @@ CFLAGS = -Wall -I$(INCLUDE_DIR)
 LDFLAGS = -lncursesw
 
 TARGET = $(BIN_DIR)/$(PROGRAM)
+
 # すべてのビルドターゲット
 all: $(TARGET)
 
