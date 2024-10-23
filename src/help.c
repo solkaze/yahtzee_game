@@ -34,7 +34,7 @@ void helpScreen(GameWin *wins) {
 
 	// カーソルの初期設定
 	displayHelpFrame(wins->main_win);
-	readFile(sub_win, "rule.txt", sub_win_width - 2, 0, 0);
+	readFile(sub_win, "data/rule.txt", sub_win_width - 2, 0, 0);
 	displayHelpItemCursor(wins->main_win, help_select);
 
 	while(ch != '\n' || help_select != 3) {
@@ -44,7 +44,7 @@ void helpScreen(GameWin *wins) {
 			sizeError(wins);
 
 			if(ch != ERR) {
-				readFile(sub_win, "rule.txt", sub_win_width - 2, 0, 0);
+				readFile(sub_win, "data/rule.txt", sub_win_width - 2, 0, 0);
 				displayHelpItemCursor(wins->main_win, help_select);
 			}
 
@@ -65,7 +65,7 @@ void helpScreen(GameWin *wins) {
 		while(help_select == 1) {
 
 			if(ch != ERR) {
-				readFile(sub_win, "operation.txt", sub_win_width - 2, 0, 0);
+				readFile(sub_win, "data/operation.txt", sub_win_width - 2, 0, 0);
 				displayHelpItemCursor(wins->main_win, help_select);
 			}
 
@@ -92,7 +92,7 @@ void helpScreen(GameWin *wins) {
 		while(help_select == 2) {
 
 			if(ch != ERR) {
-				readFile(sub_win, "role.txt", sub_win_width - 2, 0, 0);
+				readFile(sub_win, "data/role.txt", sub_win_width - 2, 0, 0);
 				displayHelpItemCursor(wins->main_win, help_select);
 			}
 

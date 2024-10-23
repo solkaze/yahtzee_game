@@ -235,9 +235,9 @@ void inputHistory(WINDOW *win, Player *pl[]) {
 	ScoreList *temp;
 
 	initializeScoreList(&temp);
-	readListFromFile(win, &temp, "score.txt");
+	readListFromFile(win, &temp, "data/score.txt");
 	addNodeBeginningPlayer(&temp, pl);
 	freeLastNodeIfOver50(&temp);
-	writeListToFile(win, &temp, "score.txt");
+	writeListToFile(win, &temp, "data/score.txt");
 	freeScoreList(&temp);
 }
