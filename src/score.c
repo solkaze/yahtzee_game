@@ -40,7 +40,7 @@ void scoreScreen(GameWin *wins) {
 	initializeScoreList(&score_history);
 
 	// スコアテキストファイルから情報を取得する
-	readListFromFile(wins->main_win, &score_history, "data/score.txt");
+	readListFromFile(wins->main_win, &score_history, "../data/score.txt");
 
 	int history_max = countScoreNode(score_history) - 1;
 

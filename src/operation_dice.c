@@ -1,13 +1,13 @@
 #include <ncurses.h>
 #include <time.h>
 #include <locale.h>
-#include <unistd.h>
 
 #include "dice_list.h"
 #include "dice.h"
 #include "create.h"
 #include "operation_dice.h"
 #include "screen_place.h"
+#include "time_sleep.h"
 
 // すべてのサイコロを表示する関数
 void displayAllDice(WINDOW *win, DiceList *dice, int num);
@@ -46,7 +46,7 @@ void displayAllDiceAnimate(WINDOW *win, DiceList *dice, int num) {
 
 	for(int i=0; i<num; i++){
 		displayDice(win, getNodeAt(dice, i), getDiceX(size_x, i, num), getDiceY(size_y));
-		usleep(70000);
+		sleep_microseconds(70000);
 		wrefresh(win);
 	}
 }
@@ -71,7 +71,7 @@ void eraseAllDiceAnimate(WINDOW *win, int num) {
 
 	for(int i = 0; i < num; i++) {
 		eraseDice(win, getDiceX(size_x, i, num), getDiceY(size_y));
-		usleep(80000);
+		sleep_microseconds(80000);
 		wrefresh(win);
 	}
 }
@@ -106,7 +106,7 @@ void eraseAllKeepDiceAnimate(WINDOW *win, int num) {
 
 	for(int i=0; i<num; i++){
 		eraseDice(win, getKeepDiceX(size_x, i), getKeepDiceY(size_y));
-		usleep(80000);
+		sleep_microseconds(80000);
 		wrefresh(win);
 	}
 }

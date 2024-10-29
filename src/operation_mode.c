@@ -1,7 +1,6 @@
 #include <ncurses.h>
 #include <unistd.h>
 
-
 #include "game_value.h"
 #include "dice_struct.h"
 #include "dice_list.h"
@@ -15,6 +14,7 @@
 #include "game_cursor.h"
 #include "operation_score.h"
 #include "message.h"
+#include "time_sleep.h"
 
 void OPModeFirst(WINDOW *win, GValue *gv, DiceStruct *dice) {
 	eraseAllDice(win, countNodes(dice->roll));
@@ -118,7 +118,7 @@ void OPModeFourth(WINDOW *win, GValue *gv, DiceStruct *dice, Player *pl,SBPlace 
 	eraseRerollCursor(win);
 	// サイコロの表示を消す
 	if(countNodes(dice->roll) != 0) {
-		usleep(10000);
+		sleep_microseconds(10000);
 		eraseAllDiceAnimate(win, gv->reroll_dice);
 	}
 

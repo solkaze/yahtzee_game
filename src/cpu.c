@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <unistd.h>
 
 #include "cpu_queue.h"
 #include "dice_list.h"
@@ -11,6 +10,7 @@
 #include "cpu_op_dice.h"
 #include "operation_bit.h"
 #include "cpu_op_data.h"
+#include "time_sleep.h"
 
 static bool vs_cpu_flag = FALSE;
 
@@ -83,7 +83,7 @@ void choiceHighest(DiceList *dice, Player *pl, double *max_value, unsigned int *
 		}
 		expected[i] = total;
 		freeList(&temp);
-		usleep(10000);
+		sleep_microseconds(10000);
 	}
 
 	// 最大値
@@ -214,7 +214,7 @@ void CPUActionDecision(Queue *q, DiceList *dice, DiceList *keep, Player *pl, int
 // CPUの行動をゲーム本体処理へ渡す
 // dequeueの仲介
 int CPUAction(Queue *q) {
-	usleep(100000);
+	sleep_microseconds(100000);
 	return dequeue(q);
 }
 

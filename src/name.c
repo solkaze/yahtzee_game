@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
@@ -7,6 +9,7 @@
 
 #include "player.h"
 #include "screen_place.h"
+#include "time_sleep.h"
 
 #define NAME_LENGTH 12
 

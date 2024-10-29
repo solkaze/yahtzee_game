@@ -14,6 +14,7 @@
 #include "dice_struct.h"
 #include "game_value.h"
 #include "window_struct.h"
+#include "time_sleep.h"
 
 // 振り直しの処理
 void rerollSelection(GameWin *wins, DiceStruct *dice, Queue *q, GValue *gv) {
@@ -34,7 +35,7 @@ void rerollSelection(GameWin *wins, DiceStruct *dice, Queue *q, GValue *gv) {
 				updateNodeAt(dice->temp, i, rollDice());
 			}
 		}
-		usleep(30000);
+		sleep_microseconds(30000);
 		if(getDebugMode()) {
 			debugList(wins->second_win, dice);
 			debugVariable(wins->second_win, gv);

@@ -1,6 +1,5 @@
 #include <ncurses.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "player.h"
 #include "calc_score.h"
@@ -8,6 +7,7 @@
 #include "game_screen.h"
 #include "game_score.h"
 #include "screen_place.h"
+#include "time_sleep.h"
 
 void displayPredictionScore(WINDOW *win, int x, int y, DiceList *dice, Player *pl, int turn);
 
@@ -113,7 +113,7 @@ int displayTotalScoreAnimate(WINDOW *win, int x, int y, int total, Player *pl, i
 		total++;
 		mvwprintw(win, placeY[2], placeX[turn] - 1, "%3d", total);
 		wrefresh(win);
-		usleep(34000);
+		sleep_microseconds(34000);
 	}
 
 	return total;
@@ -132,7 +132,7 @@ int displaySubTotalScoreAnimate(WINDOW *win, int x, int y, int total, Player *pl
 		total++;
 		mvwprintw(win, placeY[0], placeX[turn] + delay, "%2d", total);
 		wrefresh(win);
-		usleep(34000);
+		sleep_microseconds(34000);
 	}
 
 	return total;
@@ -161,12 +161,12 @@ void displayBonusScore(WINDOW *win, int x, int y, int point, int turn) {
 		wattrset(win, COLOR_PAIR(3)); // 黄色を設定
 		mvwprintw(win, placeY[1], placeX[turn], "+%2d", point);
 		wrefresh(win);
-		usleep(500000);
+		sleep_microseconds(500000);
 
 		wattrset(win, 0); // 初期色に戻す
 		mvwprintw(win, placeY[1], placeX[turn], "+%2d", point);
 		wrefresh(win);
-		usleep(500000);
+		sleep_microseconds(500000);
 	}
 
 }

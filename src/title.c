@@ -1,5 +1,4 @@
 #include <ncurses.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -8,6 +7,7 @@
 
 #include "title.h"
 #include "screen_place.h"
+#include "time_sleep.h"
 
 //描画用関数を定義
 
@@ -127,7 +127,7 @@ void printMenuCursor(WINDOW *win, int cursor) {
 			mvwaddch(win, placeY + top_delay, placeX[cursor] + left_delay + i, ACS_HLINE);
 			mvwaddch(win, placeY + bottom_delay, placeX[cursor] + left_delay + i, ACS_HLINE);
 			wrefresh(win);
-			usleep(10000);
+			sleep_microseconds(10000);
 		}
 		wattrset(win, 0);
 

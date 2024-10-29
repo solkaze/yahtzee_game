@@ -1,10 +1,11 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
 #include "operation_score.h"
 #include "op_score_list.h"
 #include "screen_place.h"
+#include "time_sleep.h"
 
 // 1試合の対戦結果を表示する
 void displayScoreHistory(WINDOW *win, ScoreList *score_list, int history_select, int x, int y) {
@@ -160,7 +161,7 @@ void displayHistoryItemCursor(WINDOW *win, int select) {
 		mvwaddch(win, placeY[select] + top_delay, placeX + left_delay + i, ACS_HLINE);
 		mvwaddch(win, placeY[select] + bottom_delay, placeX + left_delay + i, ACS_HLINE);
 		wrefresh(win);
-		usleep(10000);
+		sleep_microseconds(10000);
 	}
 
 	wattrset(win, 0);

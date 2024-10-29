@@ -5,11 +5,11 @@
 #include <string.h>
 #include <ncurses.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "operation_help.h"
 #include "error.h"
 #include "screen_place.h"
+#include "time_sleep.h"
 
 int readFile(WINDOW *win, const char *filename, int max_length, int subwin_x, int subwin_y) {
 	setlocale(LC_ALL, ""); // ロケールを設定してマルチバイト文字を扱えるようにする
@@ -106,7 +106,7 @@ void displayHelpItemCursor(WINDOW *win, int select) {
 		mvwaddch(win, placeY[select] + top_delay, placeX + left_delay + i, ACS_HLINE);
 		mvwaddch(win, placeY[select] + bottom_delay, placeX + left_delay + i, ACS_HLINE);
 		wrefresh(win);
-		usleep(10000);
+		sleep_microseconds(10000);
 	}
 
 	wattrset(win, 0);
